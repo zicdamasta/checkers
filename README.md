@@ -1,5 +1,3 @@
-# icd0008-2022f
-
 **Env variables**
 DATABASE_URL=path to database
 
