@@ -1,0 +1,45 @@
+@page
+@model WebApp.Pages.CheckersGames.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    var optionsId = Request.Query["optionsId"];
+}
+
+<h1>Create</h1>
+
+<h4>CheckersGame</h4>
+<hr/>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CheckersGame.Name" class="control-label"></label>
+                <input asp-for="CheckersGame.Name" class="form-control"/>
+                <span asp-validation-for="CheckersGame.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CheckersGame.WhiteName" class="control-label"></label>
+                <input asp-for="CheckersGame.WhiteName" class="form-control"/>
+                <span asp-validation-for="CheckersGame.WhiteName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CheckersGame.BlackName" class="control-label"></label>
+                <input asp-for="CheckersGame.BlackName" class="form-control"/>
+                <span asp-validation-for="CheckersGame.BlackName" class="text-danger"></span>
+            </div>
+            <div class="form-group" @(optionsId.Count > 0 ? "hidden" : "")>
+                <label asp-for="CheckersGame.CheckerOptionId" class="control-label">Options</label>
+                <select asp-for="CheckersGame.CheckerOptionId" class="form-control" asp-items="ViewBag.CheckerOptionId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Start game" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

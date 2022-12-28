@@ -1,0 +1,146 @@
+@page
+@using GameBrain
+@using Domain
+@model WebApp.Pages.CheckersGames.PlayModel
+@{
+    ViewData["Title"] = "Play Checkers";
+}
+<style>
+   
+    .checkers-board {
+      display: grid;
+      grid-template-columns: repeat(var(--columns), 50px);
+      grid-template-rows: repeat(var(--rows), 50px);
+    }
+    .checkers-tile-selected {
+        border: 2px solid red;
+    }
+    .checkers-tile-light {
+      background-color: #f5f5d8;
+    }
+    
+    .checkers-tile-dark{
+      background-color: #546931;
+    }
+    
+    .checker {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+    }
+    .checker-white{
+      color: white;
+    }
+    
+    .checker-black{
+      color: black;
+    }
+    
+    .checker-king{
+      font-size: 40px;
+    }
+    
+</style>
+@{
+    if (Model.CheckersGame.GameWonByPlayer != null)
+    {
+        <h1>GAME OVER!</h1>
+        <h2>@Model.CheckersGame.GameWonByPlayer won!</h2>
+    }
+    else
+    {
+        <h1>@Model.CheckersBrain.GetPlayerPieceColor()'s turn</h1>
+    }
+}
+
+<div class="checkers-board" style="--square-size: 50px; --columns: @Model.CheckersBrain.GameBoardWidth; --rows: @Model.CheckersBrain.GameBoardHeight;">
+    @for (int row = 0; row < Model.CheckersBrain.GameBoardHeight; row++)
+    {
+        @for (int col = 0; col < Model.CheckersBrain.GameBoardWidth; col++)
+        {
+            var cell = Model.CheckersBrain.LocalState.GameBoard[row][col];
+            var cellClass = "checkers-cell ";
+            if ((row + col) % 2 == 0)
+            {
+                cellClass += "checkers-tile-light";
+            }
+            else
+            {
+                cellClass += "checkers-tile-dark";
+            }
+
+
+            <div class="@cellClass" onclick="handleTileClick(event, @row, @col)">
+                @if (cell != null)
+                {
+                    var checkerClass = "checker ";
+                    switch (cell)
+                    {
+                        case EGamePiece.Black:
+                            checkerClass += "checker-black";
+                            break;
+                        case EGamePiece.BlackKing:
+                            checkerClass += "checker-black checker-king";
+                            break;
+                        case EGamePiece.White:
+                            checkerClass += "checker-white";
+                            break;
+                        case EGamePiece.WhiteKing:
+                            checkerClass += "checker-white checker-king";
+                            break;
+                    }
+
+
+                    <div class="@checkerClass">
+
+                        @switch (cell)
+                        {
+                            case EGamePiece.Black:
+                            case EGamePiece.White:
+                                @("⬤")
+                                ;
+                                break;
+                            case EGamePiece.BlackKing:
+                            case EGamePiece.WhiteKing:
+                                @("Ⓚ")
+                                ;
+                                break;
+                        }
+
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+
+
+@{
+    //refresh page after 1 second if it is a AI turn
+    if (Model.GetPlayerType(Model.CheckersGame, Model.CheckersBrain ) == EPlayerType.Ai && Model.CheckersGame.GameWonByPlayer == null)
+    {
+        <script>
+            setTimeout(function () {
+                location.reload();
+            }, 1000);
+        </script>
+    }
+}
+
+<script>
+   var selectedTile = null;
+   function handleTileClick(event, row, col) {
+       var tile = event.target;
+       if (selectedTile == null) {
+           tile.classList.add('checkers-tile-selected');
+           selectedTile = { row: row, col: col };
+       }
+       else {
+           console.log("Moving from " + selectedTile.row + ", " + selectedTile.col + " to " + row + ", " + col);
+           //redirect to the move action
+           window.location.href = `Play?id=@Model.CheckersGame.Id&moveFromRow=${selectedTile.row}&moveFromCol=${selectedTile.col}&moveToRow=${row}&moveToCol=${col}`;
+           selectedTile = null;
+       }
+   }
+</script>

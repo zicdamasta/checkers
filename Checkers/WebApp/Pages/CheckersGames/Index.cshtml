@@ -1,0 +1,101 @@
+@page
+@model WebApp.Pages.CheckersGames.IndexModel
+
+@{
+    ViewData["Title"] = "Checkers Games";
+}
+
+<style>
+a:link {
+    text-decoration: none;
+}
+</style>
+<h1>Checkers Games</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-primary">Create New</a>
+    
+    <a asp-page="../CheckersOptions/NewGameOptions" class="btn btn-primary">Create New with new options</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckersGame[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckersGame[0].StartedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckersGame[0].GameOverAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckersGame[0].GameWonByPlayer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckersGame[0].WhiteName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckersGame[0].WhitePieces)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckersGame[0].BlackName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckersGame[0].BlackPieces)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CheckersGame[0].CheckerOption)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.CheckersGame) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GameOverAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GameWonByPlayer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WhiteName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WhitePieces)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BlackName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BlackPieces)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CheckerOption!.Name)
+            </td>
+            <td>
+                @* <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> | *@
+                @* <a asp-page="./Details" asp-route-id="@item.Id">Details</a> | *@
+                @{
+                    if(item.GameWonByPlayer == null)
+                    {
+                        <a asp-page="./Play" asp-route-id="@item.Id">▶️</a>
+                    }
+                    else
+                    {
+                        <a asp-page="./Play" asp-route-id="@item.Id">👁</a>
+                    }
+                }
+                <a asp-page="./Delete" asp-route-id="@item.Id">❌</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
