@@ -1,9 +1,5 @@
 # icd0008-2022f
 
-Aleksandr Smirnov
-alesmi
-224497TAI
-
 **Env variables**
 DATABASE_URL=path to database
 
