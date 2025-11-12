@@ -77,10 +77,12 @@ public class UserInterface
     {
         const string darkTileColor = "chartreuse4";
         const string lightTileColor = "cornsilk1";
-        const string piece = "⬤";
-        const string kingPiece = "Ⓚ";
-        const string lightPieceColor = "grey100";
-        const string darkPieceColor = "grey0";
+        const string whitePiece = "○";
+        const string blackPiece = "●";
+        const string whiteKing = "◇";
+        const string blackKing = "◆";
+        const string lightPieceColor = "white";
+        const string darkPieceColor = "black";
 
         var chessBoard = "";
 
@@ -95,10 +97,10 @@ public class UserInterface
 
                 chessBoard += board[i][j] switch
                 {
-                    EGamePiece.Black => $"[{effect} {darkPieceColor} on {tileColor}] {piece} [/]",
-                    EGamePiece.BlackKing => $"[{effect} {darkPieceColor} on {tileColor}] {kingPiece} [/]",
-                    EGamePiece.White => $"[{effect} {lightPieceColor} on {tileColor}] {piece} [/]",
-                    EGamePiece.WhiteKing => $"[{effect} {lightPieceColor} on {tileColor}] {kingPiece} [/]",
+                    EGamePiece.Black => $"[{effect} {darkPieceColor} on {tileColor}] {blackPiece} [/]",
+                    EGamePiece.BlackKing => $"[{effect} {darkPieceColor} on {tileColor}] {blackKing} [/]",
+                    EGamePiece.White => $"[{effect} {lightPieceColor} on {tileColor}] {whitePiece} [/]",
+                    EGamePiece.WhiteKing => $"[{effect} {lightPieceColor} on {tileColor}] {whiteKing} [/]",
                     _ => $"[{effect} on {tileColor}]   [/]"
                 };
             }

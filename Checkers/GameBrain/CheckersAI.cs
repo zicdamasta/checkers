@@ -31,13 +31,13 @@ namespace GameBrain
         {
             // Find all possible moves for the current player
             Dictionary<Coordinates, List<Coordinates>> possibleMoves = _checkersBrain.GetPossibleMoves();
-            
+
             Move bestMove = new Move();
-            var bestScore = int.MinValue;
 
             // if white player set maximizing to true
-            var maximizing = _checkersBrain.GetPlayerPieceColor() == EGamePiece.Black;
-            
+            var maximizing = _checkersBrain.GetPlayerPieceColor() == EGamePiece.White;
+            var bestScore = maximizing ? int.MinValue : int.MaxValue;
+
             // Iterate through all possible moves
             foreach (var piece in possibleMoves)
             {
@@ -45,9 +45,10 @@ namespace GameBrain
                 {
                     var gameStateCopy = _checkersBrain.CopyGameState();
                     gameStateCopy.MakeMove(new Move(piece.Key, destination));
-                    int score = Minimax(gameStateCopy, maximizing, 3);
-                    
-                    if (score > bestScore)
+                    int score = AlphaBeta(gameStateCopy, !maximizing, 5, int.MinValue, int.MaxValue);
+
+                    bool isBetterMove = maximizing ? (score > bestScore) : (score < bestScore);
+                    if (isBetterMove)
                     {
                         bestMove = new Move(piece.Key, destination);
                         bestScore = score;
@@ -59,35 +60,55 @@ namespace GameBrain
             _checkersBrain.MakeMove(bestMove);
         }
 
-        private int Minimax(CheckersBrain gameState, bool maximizingPlayer, int depth)
+        private int AlphaBeta(CheckersBrain gameState, bool maximizingPlayer, int depth, int alpha, int beta)
         {
             if (gameState.IsGameOver() || depth == 0)
             {
-                return maximizingPlayer ? gameState.GetScore() : -gameState.GetScore();
-            }
-            
-            int bestScore = maximizingPlayer ? int.MinValue : int.MaxValue;
-            Dictionary<Coordinates, List<Coordinates>> possibleMoves = gameState.GetPossibleMoves();
-            
-            foreach (var piece in possibleMoves)
-            {
-                foreach (var destination in piece.Value)
-                {
-                    var gameStateCopy = gameState.CopyGameState();
-                    gameStateCopy.MakeMove(new Move(piece.Key, destination));
-                    int score = Minimax(gameStateCopy, !maximizingPlayer, depth - 1 );
-                    if (maximizingPlayer)
-                    {
-                        bestScore = Math.Max(bestScore, score);
-                    }
-                    else
-                    {
-                        bestScore = Math.Min(bestScore, score);
-                    }
-                }
+                return gameState.GetScore();
             }
 
-            return bestScore;
+            Dictionary<Coordinates, List<Coordinates>> possibleMoves = gameState.GetPossibleMoves();
+
+            if (maximizingPlayer)
+            {
+                int bestScore = int.MinValue;
+                foreach (var piece in possibleMoves)
+                {
+                    foreach (var destination in piece.Value)
+                    {
+                        var gameStateCopy = gameState.CopyGameState();
+                        gameStateCopy.MakeMove(new Move(piece.Key, destination));
+                        int score = AlphaBeta(gameStateCopy, false, depth - 1, alpha, beta);
+                        bestScore = Math.Max(bestScore, score);
+                        alpha = Math.Max(alpha, score);
+                        if (beta <= alpha)
+                            break; // Beta cutoff - prune remaining moves
+                    }
+                    if (beta <= alpha)
+                        break; // Prune remaining pieces
+                }
+                return bestScore;
+            }
+            else
+            {
+                int bestScore = int.MaxValue;
+                foreach (var piece in possibleMoves)
+                {
+                    foreach (var destination in piece.Value)
+                    {
+                        var gameStateCopy = gameState.CopyGameState();
+                        gameStateCopy.MakeMove(new Move(piece.Key, destination));
+                        int score = AlphaBeta(gameStateCopy, true, depth - 1, alpha, beta);
+                        bestScore = Math.Min(bestScore, score);
+                        beta = Math.Min(beta, score);
+                        if (beta <= alpha)
+                            break; // Alpha cutoff - prune remaining moves
+                    }
+                    if (beta <= alpha)
+                        break; // Prune remaining pieces
+                }
+                return bestScore;
+            }
         }
     }
 }

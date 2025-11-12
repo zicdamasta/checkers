@@ -90,3 +90,10 @@ Backup of *.doc*
 
 # Dont include .idea folder
 .idea
+
+states/**
+options/**
+games/**
+Checkers/states/**
+Checkers/options/**
+Checkers/games/**
